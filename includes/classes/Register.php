@@ -27,7 +27,7 @@ class Register
 
 	
 
-	public function sanitize($data){
+	public function sanitize(){
 
 		$data = array(
 			'last_name' => '',
@@ -70,24 +70,23 @@ class Register
 
 			$nameValidation = "/^[a-zA-Z]*$/";
 			$passwordValidation = "/^(.{0,7}|[^a-z]*|[^\d]*)$/i";
-			$phoneValidation = '/[^0-9]/';
+			$phoneValidation = '/^07[0-9]{8}$/';
 
 			//validate last and first name
 			if (empty($data['last_name'])) {
 				$data['last_name_err'] = "Enter your last name";
 				/* echo  $data['last_name_err']; */
 			}
-			else if(!preg_match($nameValidation, $data['last_name']) && strlen($data['last_name']) < 3){
-				$data['last_name_err'] = "Enter a valid last name and just be at least 3 letters";
-				
+			else if(!preg_match($nameValidation, $data['last_name']) || (strlen($data['last_name']) < 3)){
+				$data['last_name_err'] = "Enter a valid last name and must have at least 3 letters";
 			}
 
 			if (empty($data['first_name'])) {
 				$data['first_name_err'] = "Enter your first name";
 			/* 	echo  $data['first_name_err']; */
 			}
-			else if(!preg_match($nameValidation, $data['first_name']) && strlen($data['first_name']) < 3){
-				$data['first_name_err'] = "Enter a valid first name and just be at least 3 letters";
+			else if((!preg_match($nameValidation, $data['first_name']))  || (strlen($data['first_name']) < 3)){
+				$data['first_name_err'] = "Enter a valid first name and must have at least 3 letters";
 			}
 
 			// validate email
@@ -124,14 +123,24 @@ class Register
 
 			//Validate confirm password
 			 if (empty($data['password2'])) {
-					$data['password2_err'] = 'Please enter password.';
+					$data['password2_err'] = 'Please enter password and password confirmation';
 			} else {
 					if ($data['password'] != $data['password2']) {
 						$data['password2_err'] = 'Passwords do not match, please try again.';
 					}
 			}
-			// am uitat sa fac validare la telefon
-			if (empty($data['last_name_err']) && empty($data['first_name_err']) && empty($data['email_err']) && empty($data['password_err']) && empty($data['password2_err'])) {
+
+			// validate phone number
+			if (empty($data['phone'])) {
+				$data['phone_err'] = "You must enter phone number";
+			}
+			else if (!preg_match($phoneValidation, $data['phone'])) {
+				$data['phone_err'] = "You phone number must container only numbers and must start with 07 and contain 10 numbers";
+			}
+
+
+			if (empty($data['last_name_err']) && empty($data['first_name_err']) && empty($data['email_err']) && empty($data['email_err2'])
+					 && empty($data['password_err']) && empty($data['password2_err']) && empty($data['phone_err'])){
 
 				
 				$first_name_insert = $data['first_name'];
@@ -140,14 +149,21 @@ class Register
 				$email_insert = $data['email'];
 				$password_insert = $data['password'];
 
+				/* $data_insert = new DateTime(); */
+				$data_format = date("Y-m-d H:i:s");
+				
+
 				// Hash password
 				$password_insert = password_hash($data['password'], PASSWORD_DEFAULT);
 
-				$stm = "INSERT INTO users  (column1, column2, column3, ...) VALUES (value1, value2, value3, ...);"; 
+				$insert_sql = "INSERT INTO users  (first_name, last_name, email, phone_number, created_date, password) 
+				VALUES (?, ?, ?, ?, ?, ?)"; 
 
-				
-
-				
+				$stm = $this->con->prepare($insert_sql); 
+				$stm->execute([$first_name_insert,$last_name_insert,$email_insert,$phone_insert,$data_format,$password_insert]);
+			
+				header("Location: profile.php");
+					
 			}
 
 	

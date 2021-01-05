@@ -1,6 +1,7 @@
 <?php 
 include_once("config/config.php");
 include("includes/classes/Register.php");
+include("includes/classes/Login.php");
 ?>
 
 <!DOCTYPE html>
