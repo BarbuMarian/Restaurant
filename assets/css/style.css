@@ -1,0 +1,32 @@
+body{
+	background-color: pink;
+}
+
+#register_part, #login_part {
+	display: flex;
+	justify-content: center;
+
+}
+#register_part form, #login_part  form{
+	max-width: 300px;
+	flex: 1;
+}
+
+
+
+#login_part{
+	display: none;
+}
+#click_change_register {
+	text-align: center;
+	cursor: pointer;
+}
+
+.show{
+	display: block;  
+	text-align: center;
+	cursor: pointer;
+}
+.not_show {
+	display: none;
+}
