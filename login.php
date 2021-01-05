@@ -134,5 +134,30 @@ include('includes/header.php');
 </div>
 
 <?php 
+if (isset($_POST['login_btn'])){
+	echo "
+	<script>
+		document.addEventListener('DOMContentLoaded', function(){
+
+			document.getElementById('register_part').style.display = 'none';
+			document.getElementById('login_part').style.display = 'flex';
+
+			document.getElementById('click_change_register').classList.add('show');
+			document.getElementById('click_change_login').classList.remove('show');
+
+			document.getElementById('click_change_login').classList.add('not_show');
+			document.getElementById('click_change_register').classList.remove('not_show');
+
+		});
+	</script>
+	";
+}
+
+?>
+
+
+
+
+<?php 
 include('includes/footer.php');
 ?>
